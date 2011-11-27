@@ -30,7 +30,7 @@
 
 Name:           kxml
 Version:        2.2.2
-Release:        8
+Release:        10
 Summary:        Small XML pull parser
 License:        BSD
 URL:            http://kxml.sourceforge.net/
