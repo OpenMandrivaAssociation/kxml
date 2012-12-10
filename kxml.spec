@@ -110,3 +110,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc license.txt
 %{_javadocdir}/%{name}
 
+
+
+%changelog
+* Sun Nov 27 2011 Guilherme Moro <guilherme@mandriva.com> 2.2.2-10
++ Revision: 734059
+- rebuild
+- imported package kxml
+
