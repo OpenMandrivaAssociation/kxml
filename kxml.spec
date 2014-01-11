@@ -1,3 +1,4 @@
+%{?_javapackages_macros:%_javapackages_macros}
 # Copyright (c) 2000-2008, JPackage Project
 # All rights reserved.
 #
@@ -29,25 +30,21 @@
 #
 
 Name:           kxml
-Version:        2.2.2
-Release:        10
+Version:        2.3.0
+Release:        3.1%{?dist}
 Summary:        Small XML pull parser
-License:        BSD
+License:        MIT
 URL:            http://kxml.sourceforge.net/
-Group:          Development/Java
-Source0:        http://dl.sourceforge.net/sourceforge/kxml/kxml2-src-2.2.2.zip
-Source1:        http://repo1.maven.org/maven2/net/sf/kxml/kxml2/2.2.2/kxml2-2.2.2.pom
-BuildRequires:  jpackage-utils >= 0:1.7.4
-BuildRequires:  java-devel >= 0:1.5.0
+# ./create-tarball %%{version}
+Source0:        kxml-2.3.0-clean.tar.gz
+Source1:        http://repo1.maven.org/maven2/net/sf/kxml/kxml2/%{version}/kxml2-%{version}.pom
+BuildRequires:  java-devel
 BuildRequires:  ant >= 0:1.6.5
 BuildRequires:  xpp3 >= 0:1.1.3.1
-Requires:  java >= 0:1.5.0
-Requires:  xpp3
-BuildArch:      noarch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Requires:       java
+Requires:       xpp3 >= 0:1.1.3.1
 
-Requires(post):   jpackage-utils >= 0:1.7.4
-Requires(postun): jpackage-utils >= 0:1.7.4
+BuildArch:      noarch
 
 %description
 kXML is a small XML pull parser, specially designed for constrained
@@ -55,26 +52,20 @@ environments such as Applets, Personal Java or MIDP devices.
 
 %package        javadoc
 Summary:        Javadoc for %{name}
-Group:          Development/Java
 
 %description    javadoc
 API documentation for %{name}.
 
 %prep
-%setup -q -c
-for j in $(find . -name "*.jar"); do
-    mv $j $j.no
-done
+%setup -q
 ln -sf $(build-classpath xpp3) lib/xmlpull_1_1_3_1.jar
 
 %build
 ant
 
 %install
-rm -rf $RPM_BUILD_ROOT
 install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
-%add_to_maven_depmap net.sf.kxml %{name}2 %{version} JPP %{name}
 install -m 644 %{SOURCE1} \
         $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
 
@@ -85,36 +76,82 @@ install -m 644 dist/%{name}2-%{version}.jar \
 install -m 644 dist/%{name}2-min-%{version}.jar \
         $RPM_BUILD_ROOT%{_javadir}/%{name}-min.jar
 
+%add_maven_depmap JPP-%{name}.pom %{name}.jar
+
 # javadoc
 install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr www/kxml2/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
-
 %files
-%defattr(-,root,root,-)
 %doc license.txt
 %{_javadir}/*.jar
-%{_datadir}/maven2/poms/JPP-%{name}.pom
+%{_mavenpomdir}/JPP-%{name}.pom
 %{_mavendepmapfragdir}/%{name}
 
 %files javadoc
-%defattr(-,root,root,-)
 %doc license.txt
 %{_javadocdir}/%{name}
 
-
-
 %changelog
-* Sun Nov 27 2011 Guilherme Moro <guilherme@mandriva.com> 2.2.2-10
-+ Revision: 734059
-- rebuild
-- imported package kxml
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.3.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
+* Wed Jul 24 2013 Michal Srb <msrb@redhat.com> - 2.3.0-2
+- Clean up tarball
+- Drop group tag
+- Fix R
+
+* Thu Jan 24 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.3.0-1
+- Update to upstream version 2.3.0
+
+* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.2-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Mon Apr 30 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.2.2-11
+- Fix license tag
+- Add missing Requires
+
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.2-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Tue Nov 29 2011 Alexander Kurtakov <akurtako@redhat.com> 2.2.2-9
+- Adapt to current guidelines.
+
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.2.2-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Thu Dec 9 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> 2.2.2-7
+- Fix pom dependency from xmlpull to xpp3
+
+* Wed Dec 8 2010 Alexander Kurtakov <akurtako@redhat.com> 2.2.2-6
+- Remove versioned jar and javadoc.
+- Fix pom name.
+
+* Thu Sep 3 2009 Alexander Kurtakov <akurtako@redhat.com> 2.2.2-5
+- Fix Summary and description.
+- Fix line length.
+- Use pom from the URL.
+
+* Thu Sep 3 2009 Alexander Kurtakov <akurtako@redhat.com> 2.2.2-4
+- Adapt for Fedora.
+
+* Mon Dec 08 2008 Will Tatam <will.tatam@red61.com> 2.2.2-3
+- Auto rebuild for JPackage 5 in mock
+
+* Wed May 07 2008 Ralph Apel <r.apel@r-apel.de> 0:2.2.2-2jpp
+- Add xpp3 (B)R
+
+* Wed May 07 2008 Ralph Apel <r.apel@r-apel.de> 0:2.2.2-1jpp
+- 2.2.2
+
+* Thu Aug 26 2004 Fernando Nasser <fnasser@redhat.com> 0:2.1.8-4jpp
+- Pro-forma rebuild with Ant 1.6.2
+
+* Mon Jan 26 2004 David Walluck <david@anti-microsoft.org> 0:2.1.8-3jpp
+- remove fractal reference
+
+* Sun Jan 25 2004 David Walluck <david@anti-microsoft.org> 0:2.1.8-2jpp
+- fix license
+
+* Sun Jan 25 2004 David Walluck <david@anti-microsoft.org> 0:2.1.8-1jpp
+- release
