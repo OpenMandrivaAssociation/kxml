@@ -31,13 +31,15 @@
 
 Name:           kxml
 Version:        2.3.0
-Release:        3.1%{?dist}
+Release:        7.1
 Summary:        Small XML pull parser
+Group:		Development/Java
 License:        MIT
 URL:            http://kxml.sourceforge.net/
 # ./create-tarball %%{version}
 Source0:        kxml-2.3.0-clean.tar.gz
 Source1:        http://repo1.maven.org/maven2/net/sf/kxml/kxml2/%{version}/kxml2-%{version}.pom
+Source2:	http://repo1.maven.org/maven2/net/sf/kxml/kxml2-min/%{version}/kxml2-min-%{version}.pom
 BuildRequires:  java-devel
 BuildRequires:  ant >= 0:1.6.5
 BuildRequires:  xpp3 >= 0:1.1.3.1
@@ -68,6 +70,8 @@ install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
 install -m 644 %{SOURCE1} \
         $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}.pom
+install -m 644 %{SOURCE2} \
+ $RPM_BUILD_ROOT/%{_mavenpomdir}/JPP-%{name}-min.pom
 
 # jars
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
@@ -77,16 +81,15 @@ install -m 644 dist/%{name}2-min-%{version}.jar \
         $RPM_BUILD_ROOT%{_javadir}/%{name}-min.jar
 
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
+%add_maven_depmap JPP-%{name}-min.pom %{name}-min.jar
 
 # javadoc
 install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 cp -pr www/kxml2/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
-%files
+%files -f .mfiles
 %doc license.txt
 %{_javadir}/*.jar
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
 
 %files javadoc
 %doc license.txt
