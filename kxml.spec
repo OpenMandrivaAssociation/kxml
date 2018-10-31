@@ -31,7 +31,7 @@
 
 Name:           kxml
 Version:        2.3.0
-Release:        7.2
+Release:        7.3
 Summary:        Small XML pull parser
 Group:		Development/Java
 License:        MIT
