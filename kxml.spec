@@ -35,7 +35,7 @@ Release:        7.3
 Summary:        Small XML pull parser
 Group:		Development/Java
 License:        MIT
-URL:            http://kxml.sourceforge.net/
+URL:            https://kxml.sourceforge.net/
 # ./create-tarball %%{version}
 Source0:        kxml-2.3.0-clean.tar.gz
 Source1:        http://repo1.maven.org/maven2/net/sf/kxml/kxml2/%{version}/kxml2-%{version}.pom
